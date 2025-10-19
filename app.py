@@ -21,7 +21,7 @@ else:
 app.config.from_object(config[config_name])
 
 # Import models first to get db instance
-from models import db, Event, Resource, Contact, Newsletter
+from backend.models import db, Event, Resource, Contact, Newsletter
 
 # Initialize extensions
 db.init_app(app)
@@ -29,7 +29,7 @@ migrate = Migrate(app, db)
 CORS(app)
 
 # Import routes
-from routes import main_bp, api_bp, admin_bp
+from backend.routes import main_bp, api_bp, admin_bp
 
 # Register blueprints
 app.register_blueprint(main_bp)
