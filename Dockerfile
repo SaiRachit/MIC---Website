@@ -14,6 +14,7 @@ RUN apt-get update \
         postgresql-client \
         build-essential \
         libpq-dev \
+        curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better caching
@@ -36,7 +37,7 @@ EXPOSE 5000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:5000/ || exit 1
+    CMD curl -f http://localhost:${PORT:-5000}/ || exit 1
 
 # Run the application
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "wsgi:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:${PORT:-5000}", "--workers", "4", "wsgi:app"]

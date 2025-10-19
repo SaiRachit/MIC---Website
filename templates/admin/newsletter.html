@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Newsletter - MIC Innovation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Newsletter Subscribers</h1>
+            <a href="/admin/dashboard" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                Back to Dashboard
+            </a>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">All Newsletter Subscribers</h2>
+            {% if subscribers %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full table-auto">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="px-4 py-2 text-left">Email</th>
+                                <th class="px-4 py-2 text-left">Status</th>
+                                <th class="px-4 py-2 text-left">Subscribed Date</th>
+                                <th class="px-4 py-2 text-left">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for subscriber in subscribers %}
+                            <tr class="border-b">
+                                <td class="px-4 py-2">{{ subscriber.email }}</td>
+                                <td class="px-4 py-2">
+                                    {% if subscriber.is_active %}
+                                        <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Active</span>
+                                    {% else %}
+                                        <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-4 py-2">{{ subscriber.subscribed_at.strftime('%Y-%m-%d %H:%M') if subscriber.subscribed_at else 'N/A' }}</td>
+                                <td class="px-4 py-2">
+                                    {% if subscriber.is_active %}
+                                        <button class="text-red-600 hover:text-red-800 mr-2">Deactivate</button>
+                                    {% else %}
+                                        <button class="text-green-600 hover:text-green-800 mr-2">Activate</button>
+                                    {% endif %}
+                                    <button class="text-red-600 hover:text-red-800">Delete</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-gray-500">No newsletter subscribers found.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

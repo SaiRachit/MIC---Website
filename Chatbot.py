@@ -1,6 +1,5 @@
 from groq import Groq
 import datetime
-from dotenv import dotenv_values
 import time
 import os
 import sys
@@ -11,11 +10,9 @@ from models import Event, Resource, Contact, Newsletter, ChatSession, ChatMessag
 import uuid
 import hashlib
 
-env_vars = dotenv_values("../../.env")
-
-Username = env_vars.get("Username", "User")
-Assistantname = env_vars.get("Assistantname", "MAHE Innovation Centre Assistant")
-GroqAPIKey = env_vars.get("GroqAPIKey")
+Username = os.environ.get("Username", "User")
+Assistantname = os.environ.get("Assistantname", "MAHE Innovation Centre Assistant")
+GroqAPIKey = os.environ.get("GroqAPIKey")
 DB_PATH = os.path.join("instance", "mic_innovation.db")
 
 client = None

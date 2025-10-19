@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Events - MIC Innovation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Manage Events</h1>
+            <a href="/admin/dashboard" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                Back to Dashboard
+            </a>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">All Events</h2>
+            {% if events %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full table-auto">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="px-4 py-2 text-left">Title</th>
+                                <th class="px-4 py-2 text-left">Date</th>
+                                <th class="px-4 py-2 text-left">Location</th>
+                                <th class="px-4 py-2 text-left">Status</th>
+                                <th class="px-4 py-2 text-left">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for event in events %}
+                            <tr class="border-b">
+                                <td class="px-4 py-2">{{ event.title }}</td>
+                                <td class="px-4 py-2">{{ event.date.strftime('%Y-%m-%d %H:%M') if event.date else 'N/A' }}</td>
+                                <td class="px-4 py-2">{{ event.location }}</td>
+                                <td class="px-4 py-2">
+                                    <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
+                                        {{ event.status }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-2">
+                                    <button class="text-blue-600 hover:text-blue-800 mr-2">Edit</button>
+                                    <button class="text-red-600 hover:text-red-800">Delete</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-gray-500">No events found.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

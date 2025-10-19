@@ -12,8 +12,8 @@ from whitenoise import WhiteNoise
 app = Flask(__name__)
 
 # Load configuration based on environment
-# For Render deployment, detect production environment
-if os.environ.get('RENDER') or os.environ.get('FLASK_ENV') == 'production':
+# For Railway deployment, detect production environment
+if os.environ.get('RAILWAY_ENVIRONMENT') or os.environ.get('RENDER') or os.environ.get('FLASK_ENV') == 'production':
     config_name = 'production'
 else:
     config_name = os.environ.get('FLASK_ENV', 'development')
@@ -52,7 +52,10 @@ def internal_error(error):
     db.session.rollback()
     return render_template('500.html'), 500
 
+# Initialize database on startup
+with app.app_context():
+    db.create_all()
+    print("✅ Database tables created successfully")
+
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     app.run(debug=True, host='0.0.0.0', port=5000)

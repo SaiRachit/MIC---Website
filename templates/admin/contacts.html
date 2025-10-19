@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Contacts - MIC Innovation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Contact Messages</h1>
+            <a href="/admin/dashboard" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                Back to Dashboard
+            </a>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">All Contact Messages</h2>
+            {% if contacts %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full table-auto">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="px-4 py-2 text-left">Name</th>
+                                <th class="px-4 py-2 text-left">Email</th>
+                                <th class="px-4 py-2 text-left">Subject</th>
+                                <th class="px-4 py-2 text-left">Status</th>
+                                <th class="px-4 py-2 text-left">Date</th>
+                                <th class="px-4 py-2 text-left">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for contact in contacts %}
+                            <tr class="border-b">
+                                <td class="px-4 py-2">{{ contact.name }}</td>
+                                <td class="px-4 py-2">{{ contact.email }}</td>
+                                <td class="px-4 py-2">{{ contact.subject }}</td>
+                                <td class="px-4 py-2">
+                                    {% if contact.is_read %}
+                                        <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Read</span>
+                                    {% else %}
+                                        <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">Unread</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-4 py-2">{{ contact.created_at.strftime('%Y-%m-%d %H:%M') if contact.created_at else 'N/A' }}</td>
+                                <td class="px-4 py-2">
+                                    <button class="text-blue-600 hover:text-blue-800 mr-2">View</button>
+                                    <button class="text-green-600 hover:text-green-800 mr-2">Mark Read</button>
+                                    <button class="text-red-600 hover:text-red-800">Delete</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-gray-500">No contact messages found.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
