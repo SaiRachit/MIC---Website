@@ -3,6 +3,11 @@
 
 echo "Starting build process for MIC Innovation website..."
 
+echo "Current Python: $(python --version)"
+# Force pip to use the right Python
+pip install --upgrade pip setuptools wheel
+pip install -r requirements.txt
+
 # Install dependencies
 echo "Installing Python dependencies..."
 pip install -r requirements.txt
