@@ -1,14 +1,28 @@
-from groq import Groq
 import datetime
 import time
 import os
 import sys
 import sqlite3
 import json
-from flask import current_app, request
-from models import Event, Resource, Contact, Newsletter, ChatSession, ChatMessage, db
 import uuid
 import hashlib
+
+# Optional imports - handle gracefully if not available
+try:
+    from groq import Groq
+    GROQ_AVAILABLE = True
+except ImportError:
+    print("Warning: Groq package not available")
+    GROQ_AVAILABLE = False
+    Groq = None
+
+try:
+    from flask import current_app, request
+    from models import Event, Resource, Contact, Newsletter, ChatSession, ChatMessage, db
+    FLASK_AVAILABLE = True
+except ImportError:
+    print("Warning: Flask or models not available")
+    FLASK_AVAILABLE = False
 
 Username = os.environ.get("Username", "User")
 Assistantname = os.environ.get("Assistantname", "MAHE Innovation Centre Assistant")
@@ -16,12 +30,14 @@ GroqAPIKey = os.environ.get("GroqAPIKey")
 DB_PATH = os.path.join("instance", "mic_innovation.db")
 
 client = None
-if GroqAPIKey and GroqAPIKey != "your-groq-api-key-here":
+if GROQ_AVAILABLE and GroqAPIKey and GroqAPIKey != "your-groq-api-key-here":
     try:
         client = Groq(api_key=GroqAPIKey)
     except Exception as e:
         print(f"Failed to initialize Groq client: {e}")
         client = None
+else:
+    print("Groq client not available - API key missing or package not installed")
 
 System = f"""You are {Assistantname}, the official AI assistant for MAHE Innovation Centre (MiC).
 

@@ -29,12 +29,22 @@ migrate = Migrate(app, db)
 CORS(app)
 
 # Import routes
-from routes import main_bp, api_bp, admin_bp
+try:
+    from routes import main_bp, api_bp, admin_bp
+    print("✅ Routes imported successfully")
+except Exception as e:
+    print(f"❌ Error importing routes: {e}")
+    raise
 
 # Register blueprints
-app.register_blueprint(main_bp)
-app.register_blueprint(api_bp, url_prefix='/api')
-app.register_blueprint(admin_bp, url_prefix='/admin')
+try:
+    app.register_blueprint(main_bp)
+    app.register_blueprint(api_bp, url_prefix='/api')
+    app.register_blueprint(admin_bp, url_prefix='/admin')
+    print("✅ Blueprints registered successfully")
+except Exception as e:
+    print(f"❌ Error registering blueprints: {e}")
+    raise
 
 # Create upload directory if it doesn't exist
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -53,9 +63,13 @@ def internal_error(error):
     return render_template('500.html'), 500
 
 # Initialize database on startup
-with app.app_context():
-    db.create_all()
-    print("✅ Database tables created successfully")
+try:
+    with app.app_context():
+        db.create_all()
+        print("✅ Database tables created successfully")
+except Exception as e:
+    print(f"❌ Error creating database tables: {e}")
+    # Don't raise here to allow app to start even if DB fails
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

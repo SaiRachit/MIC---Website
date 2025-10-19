@@ -2,7 +2,15 @@ from flask import Blueprint, render_template, request, jsonify, redirect, url_fo
 from models import Event, Resource, Contact, Newsletter, db
 from datetime import datetime
 import os
-from Chatbot import ChatBot
+
+# Optional Chatbot import - won't break deployment if groq is not available
+try:
+    from Chatbot import ChatBot
+    CHATBOT_AVAILABLE = True
+except ImportError:
+    print("Warning: Chatbot module not available - groq package may not be installed")
+    CHATBOT_AVAILABLE = False
+    ChatBot = None
 
 # Create blueprints
 main_bp = Blueprint('main', __name__)
@@ -152,7 +160,10 @@ def chatbot_response():
             return jsonify({'error': 'No message provided'}), 400
         
         # Get response from our chatbot with session tracking
-        bot_response = ChatBot(user_message, session_id)
+        if CHATBOT_AVAILABLE and ChatBot:
+            bot_response = ChatBot(user_message, session_id)
+        else:
+            bot_response = "Chatbot service is currently unavailable. Please try again later."
         
         return jsonify({
             'response': bot_response,
