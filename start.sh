@@ -1,12 +1,15 @@
 #!/bin/bash
+set -e  # exit on error
 
-# Railway startup script
 echo "🚀 Starting MAHE Innovation Centre Application..."
 
-# Get port from Railway environment variable
-PORT=${PORT:-5000}
+# Validate PORT
+if [ -z "$PORT" ]; then
+  echo "⚠️  PORT not set, defaulting to 5000"
+  PORT=5000
+fi
+
 echo "📍 Using port: $PORT"
 
-# Start the application with gunicorn
-echo "🚀 Starting gunicorn server..."
-exec gunicorn --bind 0.0.0.0:$PORT --workers 4 --timeout 120 wsgi:app
+# Start Gunicorn server
+exec gunicorn --bind 0.0.0.0:${PORT} --workers 4 --timeout 120 wsgi:app
