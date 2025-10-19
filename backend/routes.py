@@ -4,7 +4,7 @@ from pathlib import Path
 import os
 from pathlib import Path
 
-backend_path = Path(__file__).parent / "backEnd"
+backend_path = Path(__file__).parent / "backend"
 sys.path.insert(0, str(backend_path))
 
 
