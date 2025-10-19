@@ -1,11 +1,10 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash, send_file
 import sys
 from pathlib import Path
-sys.path.append(str(Path(__file__).parent.parent))
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from models import Event, Resource, Contact, Newsletter, db
 from datetime import datetime
-import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from Chatbot import ChatBot
 
 # Create blueprints
