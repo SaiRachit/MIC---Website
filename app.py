@@ -24,14 +24,16 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_recycle': 300,
 }
 
-# Initialize extensions
-db = SQLAlchemy(app)
+# Import db from models
+from models import db, Event, Resource, Contact, Newsletter, ChatSession, ChatMessage
+
+# Initialize extensions with app
+db.init_app(app)
 migrate = Migrate(app, db)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-# Import models first (before routes)
+# Create tables
 with app.app_context():
-    from models import Event, Resource, Contact, Newsletter, ChatSession, ChatMessage
     
     # Create tables if they don't exist
     try:
