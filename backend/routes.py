@@ -2,8 +2,15 @@ from flask import Blueprint, render_template, request, jsonify, redirect, url_fo
 import sys
 from pathlib import Path
 import os
-from ..models import Event, Resource, Contact, Newsletter, db
-from datetime import datetime
+from pathlib import Path
+
+# Add the parent directory to Python path
+parent_dir = Path(__file__).resolve().parent.parent
+if str(parent_dir) not in sys.path:
+    sys.path.insert(0, str(parent_dir))
+
+# Now use absolute import
+from models import Event, Resource, Contact, Newsletter, dbfrom datetime import datetime
 from Chatbot import ChatBot
 
 # Create blueprints
