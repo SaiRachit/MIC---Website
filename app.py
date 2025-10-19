@@ -5,7 +5,7 @@ from flask_cors import CORS
 from datetime import datetime
 import os
 from werkzeug.utils import secure_filename
-from config import config
+from backend.config import config
 from whitenoise import WhiteNoise
 
 # Initialize Flask app
