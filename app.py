@@ -15,7 +15,12 @@ from whitenoise import WhiteNoise
 
 # Initialize Flask app
 app = Flask(__name__)
+import sys
+from pathlib import Path
 
+# Ensure the base directory is in the path
+BASE_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(BASE_DIR))
 # Load configuration based on environment
 # For Render deployment, detect production environment
 if os.environ.get('RENDER') or os.environ.get('FLASK_ENV') == 'production':
