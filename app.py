@@ -5,7 +5,10 @@ from flask_cors import CORS
 from datetime import datetime
 import os
 from werkzeug.utils import secure_filename
-from backend.config import config
+backend_path = Path(__file__).parent / "backend"
+sys.path.insert(0, str(backend_path))
+
+from config import config
 from whitenoise import WhiteNoise
 
 # Initialize Flask app
@@ -21,7 +24,7 @@ else:
 app.config.from_object(config[config_name])
 
 # Import models first to get db instance
-from backend.models import db, Event, Resource, Contact, Newsletter
+from models import db, Event, Resource, Contact, Newsletter
 
 # Initialize extensions
 db.init_app(app)
@@ -29,7 +32,7 @@ migrate = Migrate(app, db)
 CORS(app)
 
 # Import routes
-from backend.routes import main_bp, api_bp, admin_bp
+from routes import main_bp, api_bp, admin_bp
 
 # Register blueprints
 app.register_blueprint(main_bp)
