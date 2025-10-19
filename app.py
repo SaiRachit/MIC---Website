@@ -1,75 +1,78 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
+import os
+import sys
+from pathlib import Path
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
-from datetime import datetime
-import os
-import sys
-from werkzeug.utils import secure_filename
-from pathlib import Path
-backend_path = Path(__file__).parent / "backend"
-sys.path.insert(0, str(backend_path))
 
-from config import config
-from whitenoise import WhiteNoise
-
-# Initialize Flask app
-app = Flask(__name__)
-import sys
-from pathlib import Path
-
-# Ensure the base directory is in the path
+# Setup paths
 BASE_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(BASE_DIR))
-# Load configuration based on environment
-# For Render deployment, detect production environment
-if os.environ.get('RENDER') or os.environ.get('FLASK_ENV') == 'production':
-    config_name = 'production'
-else:
-    config_name = os.environ.get('FLASK_ENV', 'development')
 
-app.config.from_object(config[config_name])
+# Initialize Flask app with explicit paths
+app = Flask(__name__,
+            template_folder=os.path.join(BASE_DIR, 'templates'),
+            static_folder=os.path.join(BASE_DIR, 'static'))
 
-# Import models first to get db instance
-from models import db, Event, Resource, Contact, Newsletter
+# Configuration
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', f'sqlite:///{BASE_DIR}/instance/mic_innovation.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_pre_ping': True,
+    'pool_recycle': 300,
+}
 
 # Initialize extensions
-db.init_app(app)
+db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-# Import routes
-from routes import main_bp, api_bp, admin_bp
+# Import models first (before routes)
+with app.app_context():
+    from models import Event, Resource, Contact, Newsletter, ChatSession, ChatMessage
+    
+    # Create tables if they don't exist
+    try:
+        db.create_all()
+        print("Database tables created successfully")
+    except Exception as e:
+        print(f"Error creating database tables: {e}")
 
-# Register blueprints
-app.register_blueprint(main_bp)
-app.register_blueprint(api_bp, url_prefix='/api')
-app.register_blueprint(admin_bp, url_prefix='/admin')
+# Import and register blueprints
+try:
+    from backend.routes import main_bp, api_bp, admin_bp
+    
+    app.register_blueprint(main_bp)
+    app.register_blueprint(api_bp, url_prefix='/api')
+    app.register_blueprint(admin_bp, url_prefix='/admin')
+    print("Blueprints registered successfully")
+except Exception as e:
+    print(f"Error registering blueprints: {e}")
+    raise
+
 # Error handlers
 @app.errorhandler(404)
 def not_found_error(error):
-    return render_template('404.html'), 404
-
-@app.errorhandler(500)
-def internal_error(error):
-    return render_template('500.html'), 500
-# Create upload directory if it doesn't exist
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-
-# Configure WhiteNoise for static files in production
-if config_name == 'production':
-    app.wsgi_app = WhiteNoise(app.wsgi_app, root='static/')
-
-@app.errorhandler(404)
-def not_found(error):
-    return render_template('404.html'), 404
+    try:
+        return render_template('404.html'), 404
+    except:
+        return "404 - Page Not Found", 404
 
 @app.errorhandler(500)
 def internal_error(error):
     db.session.rollback()
-    return render_template('500.html'), 500
+    try:
+        return render_template('500.html'), 500
+    except:
+        return "500 - Internal Server Error", 500
+
+# Health check endpoint
+@app.route('/health')
+def health_check():
+    return {'status': 'healthy', 'message': 'Application is running'}, 200
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
