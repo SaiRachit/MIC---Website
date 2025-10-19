@@ -1,8 +1,10 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash, send_file
-from backend.models import Event, Resource, Contact, Newsletter, db
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent))
+from models import Event, Resource, Contact, Newsletter, db
 from datetime import datetime
 import os
-import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from Chatbot import ChatBot
 
