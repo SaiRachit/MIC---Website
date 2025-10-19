@@ -4,6 +4,7 @@ from flask_migrate import Migrate
 from flask_cors import CORS
 from datetime import datetime
 import os
+import sys
 from werkzeug.utils import secure_filename
 from pathlib import Path
 backend_path = Path(__file__).parent / "backend"
