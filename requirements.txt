@@ -5,6 +5,7 @@ Flask-CORS==5.0.0
 Werkzeug==3.0.4
 SQLAlchemy==2.0.35
 python-dotenv==1.0.1
+gunicorn>=21.0.0
 psycopg2-binary==2.9.10
 Pillow==11.0.0
 email-validator==2.2.0
