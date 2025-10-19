@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, jsonify, redirect, url_fo
 import sys
 from pathlib import Path
 import os
-from models import Event, Resource, Contact, Newsletter, db
+from ..models import Event, Resource, Contact, Newsletter, db
 from datetime import datetime
 from Chatbot import ChatBot
 
