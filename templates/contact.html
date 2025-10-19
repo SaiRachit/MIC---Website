@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Contact Us - MAHE Innovation Centre{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Liquid Glass Navbar */
+        .liquid-glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        
+        .liquid-glass::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
+            border-radius: inherit;
+            z-index: -1;
+        }
+        
+        /* Liquid navigation effect */
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ff6b35, #ff8c42);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        
+        .nav-link:hover::before {
+            width: 100%;
+        }
+        
+        /* Custom dropdown styling */
+        .custom-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+        
+        /* Form animations */
+        .form-group {
+            position: relative;
+        }
+        
+        .form-input:focus + .form-label,
+        .form-input:not(:placeholder-shown) + .form-label {
+            transform: translateY(-1.5rem) scale(0.9);
+            color: #ff6b35;
+        }
+        
+        .form-label {
+            position: absolute;
+            left: 1rem;
+            top: 1rem;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            background: rgba(209, 213, 219, 0.8);
+            padding: 0 0.25rem;
+            border-radius: 0.25rem;
+        }
+        
+        /* Glass card effect */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Orange blob animation */
+        .orange-blob {
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            animation: blob 8s ease-in-out infinite;
+        }
+        
+        @keyframes blob {
+            0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+            25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
+            50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+            75% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
+        }
+        
+        /* Floating animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'orange-primary': '#ff6b35',
+                        'orange-secondary': '#ff8c42',
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-200 font-inter overflow-x-hidden">
+    <!-- Navigation -->
+    <nav class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-11/12 max-w-6xl">
+        <div class="liquid-glass rounded-full px-6 py-3 relative">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gradient-to-br from-orange-primary to-orange-secondary rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">M</span>
+                    </div>
+                    <span class="text-gray-800 font-semibold text-lg">MAHE</span>
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-8 ml-auto">
+                    <a href="{{ url_for('main.index') }}" class="nav-link relative text-gray-700 hover:text-orange-primary transition-colors font-medium">Home</a>
+                    <a href="{{ url_for('main.about') }}" class="nav-link relative text-gray-700 hover:text-orange-primary transition-colors font-medium">About Us</a>
+                    <a href="{{ url_for('main.events') }}" class="nav-link relative text-gray-700 hover:text-orange-primary transition-colors font-medium">Events</a>
+                    <a href="{{ url_for('main.resources') }}" class="nav-link relative text-gray-700 hover:text-orange-primary transition-colors font-medium">Resources</a>
+                    <a href="{{ url_for('main.contact') }}" class="nav-link relative text-orange-primary font-medium">Contact</a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-gray-700" id="mobile-menu-btn">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Contact Section -->
+    <section class="min-h-screen bg-gray-200 pt-24 pb-16 relative overflow-hidden">
+        <!-- Background Orange Blob -->
+        <div class="absolute bottom-0 left-0 w-96 h-96 orange-blob opacity-80 -translate-x-32 translate-y-32 float-animation"></div>
+        
+        <div class="container mx-auto px-6 lg:px-12">
+            <div class="grid lg:grid-cols-2 gap-12 items-start max-w-7xl mx-auto">
+                <!-- Left Content -->
+                <div class="space-y-8">
+                    <div>
+                        <h1 class="text-5xl lg:text-6xl font-black text-gray-900 mb-6">
+                            Get in Touch with Us
+                        </h1>
+                        <p class="text-lg text-gray-600">
+                            We'll do our best to respond within 1-2 working days.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Contact Form -->
+                <div class="glass-card rounded-3xl p-8 shadow-2xl">
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">Contact Us</h2>
+                    </div>
+                    
+                    <form id="contactForm" class="space-y-6">
+                        <!-- Full Name -->
+                        <div class="form-group">
+                            <input 
+                                type="text" 
+                                id="fullName" 
+                                name="fullName"
+                                placeholder=" "
+                                required
+                                class="form-input w-full px-4 py-3 bg-gray-300/50 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-primary focus:border-transparent transition-all duration-300"
+                            >
+                            <label for="fullName" class="form-label text-gray-600 font-medium">Full Name</label>
+                        </div>
+                        
+                        <!-- Email -->
+                        <div class="form-group">
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email"
+                                placeholder=" "
+                                required
+                                class="form-input w-full px-4 py-3 bg-gray-300/50 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-primary focus:border-transparent transition-all duration-300"
+                            >
+                            <label for="email" class="form-label text-gray-600 font-medium">Email</label>
+                        </div>
+                        
+                        <!-- Type of Request -->
+                        <div class="form-group">
+                            <label for="requestType" class="block text-gray-600 font-medium mb-2">Type of request</label>
+                            <select 
+                                id="requestType" 
+                                name="requestType"
+                                required
+                                class="custom-select w-full px-4 py-3 bg-gray-300/50 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-primary focus:border-transparent transition-all duration-300"
+                            >
+                                <option value="">Select one...</option>
+                                <option value="general">General Inquiry</option>
+                                <option value="partnership">Partnership</option>
+                                <option value="support">Technical Support</option>
+                                <option value="mentorship">Mentorship Program</option>
+                                <option value="incubation">Incubation Support</option>
+                                <option value="events">Events & Workshops</option>
+                                <option value="resources">Resource Access</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Your Message -->
+                        <div class="form-group">
+                            <label for="message" class="block text-gray-600 font-medium mb-2">Your message</label>
+                            <textarea 
+                                id="message" 
+                                name="message"
+                                rows="4"
+                                required
+                                placeholder="Please describe your inquiry or request in detail..."
+                                class="w-full px-4 py-3 bg-gray-300/50 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-primary focus:border-transparent transition-all duration-300 resize-none"
+                            ></textarea>
+                        </div>
+                        
+                        <!-- Terms Checkbox -->
+                        <div class="flex items-start space-x-3">
+                            <input 
+                                type="checkbox" 
+                                id="terms" 
+                                name="terms"
+                                required
+                                class="mt-1 w-4 h-4 text-orange-primary bg-gray-300 border-gray-400 rounded focus:ring-orange-primary focus:ring-2"
+                            >
+                            <label for="terms" class="text-sm text-gray-600 leading-relaxed">
+                                I agree to the MiC's <a href="#" class="text-orange-primary hover:underline">terms of services</a>
+                            </label>
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <button 
+                            type="submit"
+                            class="w-full bg-gradient-to-r from-orange-primary to-orange-secondary text-white py-4 rounded-lg font-semibold text-lg hover:shadow-lg transform hover:scale-[1.02] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-primary focus:ring-offset-2"
+                        >
+                            Send
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="container mx-auto px-6 lg:px-12">
+            <div class="grid lg:grid-cols-2 gap-12 mb-12">
+                <!-- Newsletter -->
+                <div>
+                    <h3 class="text-2xl font-semibold mb-6 max-w-sm">Subscribe to our newsletter for the latest features and updates.</h3>
+                    <form class="flex flex-col sm:flex-row gap-4 mb-4" id="newsletterForm">
+                        <input 
+                            type="email" 
+                            placeholder="Your Email Here" 
+                            required
+                            class="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-orange-primary transition-colors"
+                        >
+                        <button 
+                            type="submit" 
+                            class="bg-orange-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-secondary transition-colors"
+                        >
+                            Subscribe
+                        </button>
+                    </form>
+                    <p class="text-sm text-gray-400">By subscribing, you consent to our Privacy Policy and receive updates.</p>
+                </div>
+                
+                <!-- Links -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Useful Links -->
+                    <div>
+                        <h4 class="font-bold mb-6 uppercase tracking-wider">Useful Links</h4>
+                        <ul class="space-y-3">
+                            <li><a href="about.html" class="text-gray-400 hover:text-orange-primary transition-colors">About Us</a></li>
+                            <li><a href="contact.html" class="text-gray-400 hover:text-orange-primary transition-colors">Contact Us</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-orange-primary transition-colors">Blog Posts</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-orange-primary transition-colors">Help Center</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-orange-primary transition-colors">Careers</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Connect With Us -->
+                    <div>
+                        <h4 class="font-bold mb-6 uppercase tracking-wider">Connect With Us</h4>
+                        <ul class="space-y-3">
+                            <li><a href="#" class="text-gray-400 hover:text-orange-primary transition-colors">Join Us</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-orange-primary transition-colors">Our Team</a></li>
+                            <li><a href="events.html" class="text-gray-400 hover:text-orange-primary transition-colors">Events</a></li>
+                            <li><a href="resources.html" class="text-gray-400 hover:text-orange-primary transition-colors">Resources</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-orange-primary transition-colors">Support</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Follow Us -->
+                    <div>
+                        <h4 class="font-bold mb-6 uppercase tracking-wider">Follow Us</h4>
+                        <div class="space-y-3">
+                            <a href="#" class="flex items-center space-x-2 text-gray-400 hover:text-orange-primary transition-colors">
+                                <i class="fab fa-facebook"></i>
+                                <span>Facebook</span>
+                            </a>
+                            <a href="#" class="flex items-center space-x-2 text-gray-400 hover:text-orange-primary transition-colors">
+                                <i class="fab fa-instagram"></i>
+                                <span>Instagram</span>
+                            </a>
+                            <a href="#" class="flex items-center space-x-2 text-gray-400 hover:text-orange-primary transition-colors">
+                                <i class="fab fa-twitter"></i>
+                                <span>Twitter</span>
+                            </a>
+                            <a href="#" class="flex items-center space-x-2 text-gray-400 hover:text-orange-primary transition-colors">
+                                <i class="fab fa-linkedin"></i>
+                                <span>LinkedIn</span>
+                            </a>
+                            <a href="#" class="flex items-center space-x-2 text-gray-400 hover:text-orange-primary transition-colors">
+                                <i class="fab fa-youtube"></i>
+                                <span>YouTube</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer Bottom -->
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 text-sm mb-4 md:mb-0">© MAHE INNOVATION CENTRE</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-orange-primary transition-colors text-sm">Privacy Policy</a>
+                    <a href="#" class="text-gray-400 hover:text-orange-primary transition-colors text-sm">Terms of Service</a>
+                    <a href="#" class="text-gray-400 hover:text-orange-primary transition-colors text-sm">Cookie Settings</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Success/Error Modal -->
+    <div id="responseModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden items-center justify-center">
+        <div class="bg-white rounded-2xl p-8 max-w-md mx-4 text-center">
+            <div id="modalIcon" class="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"></div>
+            <h3 id="modalTitle" class="text-xl font-bold text-gray-900 mb-2"></h3>
+            <p id="modalMessage" class="text-gray-600 mb-6"></p>
+            <button id="modalClose" class="bg-orange-primary text-white px-6 py-2 rounded-lg hover:bg-orange-secondary transition-colors">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/contactscript.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/api-integration.js') }}"></script>
+</body>
+</html>

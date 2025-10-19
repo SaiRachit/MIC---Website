@@ -1,0 +1,36 @@
+# Environment Configuration Template
+# Copy this file to .env and fill in your values
+
+# Flask Configuration
+FLASK_ENV=development
+SECRET_KEY=your-secret-key-here
+
+# Database Configuration
+# For development (SQLite)
+DATABASE_URL=sqlite:///mic_innovation.db
+
+# For production (PostgreSQL) - Railway will provide this
+# DATABASE_URL=postgresql://username:password@host:port/database
+
+# Email Configuration (Optional)
+MAIL_SERVER=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USE_TLS=True
+MAIL_USERNAME=your-email@gmail.com
+MAIL_PASSWORD=your-app-password
+
+# Admin Configuration
+ADMIN_EMAIL=admin@mic.com
+ADMIN_PASSWORD=your-admin-password
+
+# Upload Configuration
+UPLOAD_FOLDER=static/uploads
+MAX_CONTENT_LENGTH=16777216
+
+# Security Configuration
+WTF_CSRF_ENABLED=True
+WTF_CSRF_TIME_LIMIT=3600
+
+# Application Configuration
+APP_NAME=MIC Innovation
+APP_VERSION=1.0.0

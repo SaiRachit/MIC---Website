@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - DATABASE_URL=postgresql://mic_user:mic_password@db:5432/mic_innovation
+    depends_on:
+      - db
+    volumes:
+      - ./static/uploads:/app/static/uploads
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=mic_innovation
+      - POSTGRES_USER=mic_user
+      - POSTGRES_PASSWORD=mic_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:
