@@ -1,16 +1,22 @@
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash, send_file
+from flask import Blueprint, render_template, request, jsonify
 import sys
 from pathlib import Path
-import os
-from pathlib import Path
 
-backend_path = Path(__file__).parent / "backend"
-sys.path.insert(0, str(backend_path))
-
+# Add parent directory to path
+parent_dir = Path(__file__).parent.parent
+if str(parent_dir) not in sys.path:
+    sys.path.insert(0, str(parent_dir))
 
 from models import Event, Resource, Contact, Newsletter, db
 from datetime import datetime
-from Chatbot import ChatBot
+
+# Import ChatBot with error handling
+try:
+    from backend.Chatbot import ChatBot
+    CHATBOT_AVAILABLE = True
+except ImportError as e:
+    print(f"Chatbot import failed: {e}")
+    CHATBOT_AVAILABLE = False
 
 # Create blueprints
 main_bp = Blueprint('main', __name__)
@@ -35,7 +41,9 @@ def events():
 def resources():
     featured_resources = Resource.query.filter_by(is_featured=True).all()
     all_resources = Resource.query.order_by(Resource.created_at.desc()).all()
-    return render_template('resources.html', featured_resources=featured_resources, all_resources=all_resources)
+    return render_template('resources.html', 
+                         featured_resources=featured_resources, 
+                         all_resources=all_resources)
 
 @main_bp.route('/contact')
 def contact():
@@ -151,24 +159,30 @@ def unsubscribe_newsletter(email):
 @api_bp.route('/chatbot', methods=['POST'])
 def chatbot_response():
     """Handle chatbot messages with session tracking"""
+    if not CHATBOT_AVAILABLE:
+        return jsonify({
+            'error': 'Chatbot service is temporarily unavailable',
+            'timestamp': datetime.now().isoformat()
+        }), 503
+    
     try:
         data = request.get_json()
         user_message = data.get('message', '').strip()
-        session_id = data.get('session_id')  # Get session ID from frontend
+        session_id = data.get('session_id')
         
         if not user_message:
             return jsonify({'error': 'No message provided'}), 400
         
-        # Get response from our chatbot with session tracking
         bot_response = ChatBot(user_message, session_id)
         
         return jsonify({
             'response': bot_response,
             'timestamp': datetime.now().isoformat(),
-            'session_id': session_id  # Return session ID for frontend to store
+            'session_id': session_id
         })
         
     except Exception as e:
+        print(f"Chatbot error: {e}")
         return jsonify({
             'error': 'Sorry, I encountered an error. Please try again.',
             'timestamp': datetime.now().isoformat()
