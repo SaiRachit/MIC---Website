@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash, send_file
-from models import Event, Resource, Contact, Newsletter, db
+from backend.models import Event, Resource, Contact, Newsletter, db
 from datetime import datetime
 import os
 import sys
