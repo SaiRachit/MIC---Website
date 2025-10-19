@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
-# Initialize db here - will be imported by app.py
+# Initialize db here (will be bound to app in app.py)
 db = SQLAlchemy()
 
 class Event(db.Model):
@@ -9,15 +9,14 @@ class Event(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
-    description = db.Column(db.Text, nullable=False)
+    description = db.Column(db.Text)
     date = db.Column(db.DateTime, nullable=False)
-    location = db.Column(db.String(200), nullable=False)
+    location = db.Column(db.String(200))
     attendees = db.Column(db.Integer, default=0)
     price = db.Column(db.String(50), default='Free')
     image_url = db.Column(db.String(500))
-    status = db.Column(db.String(20), default='upcoming')  # upcoming, ongoing, completed
+    status = db.Column(db.String(50), default='upcoming')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     def to_dict(self):
         return {
@@ -38,16 +37,15 @@ class Resource(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    category = db.Column(db.String(100), nullable=False)  # toolkit, guide, mentorship, workshop, etc.
+    description = db.Column(db.Text)
+    category = db.Column(db.String(100))
     file_url = db.Column(db.String(500))
     download_count = db.Column(db.Integer, default=0)
     rating = db.Column(db.Float, default=0.0)
-    format = db.Column(db.String(50))  # PDF, Video, etc.
-    duration = db.Column(db.String(50))  # 2 Hours Read, etc.
+    format = db.Column(db.String(50))
+    duration = db.Column(db.String(50))
     is_featured = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     def to_dict(self):
         return {
@@ -70,11 +68,10 @@ class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), nullable=False)
-    subject = db.Column(db.String(200), nullable=False)
+    subject = db.Column(db.String(200))
     message = db.Column(db.Text, nullable=False)
     phone = db.Column(db.String(20))
     company = db.Column(db.String(100))
-    is_read = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     def to_dict(self):
@@ -86,15 +83,14 @@ class Contact(db.Model):
             'message': self.message,
             'phone': self.phone,
             'company': self.company,
-            'is_read': self.is_read,
             'created_at': self.created_at.isoformat() if self.created_at else None
         }
 
 class Newsletter(db.Model):
-    __tablename__ = 'newsletters'
+    __tablename__ = 'newsletter'
     
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), nullable=False, unique=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
     is_active = db.Column(db.Boolean, default=True)
     subscribed_at = db.Column(db.DateTime, default=datetime.utcnow)
     
@@ -110,44 +106,22 @@ class ChatSession(db.Model):
     __tablename__ = 'chat_sessions'
     
     id = db.Column(db.Integer, primary_key=True)
-    session_id = db.Column(db.String(100), nullable=False, unique=True)
-    user_ip = db.Column(db.String(45))  # IPv6 support
-    user_agent = db.Column(db.Text)
-    started_at = db.Column(db.DateTime, default=datetime.utcnow)
+    session_id = db.Column(db.String(100), unique=True, nullable=False)
+    user_ip = db.Column(db.String(50))
+    user_agent = db.Column(db.String(500))
+    context_data = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     last_activity = db.Column(db.DateTime, default=datetime.utcnow)
-    is_active = db.Column(db.Boolean, default=True)
-    context_data = db.Column(db.Text)  # JSON string for context
     
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'session_id': self.session_id,
-            'user_ip': self.user_ip,
-            'user_agent': self.user_agent,
-            'started_at': self.started_at.isoformat() if self.started_at else None,
-            'last_activity': self.last_activity.isoformat() if self.last_activity else None,
-            'is_active': self.is_active,
-            'context_data': self.context_data
-        }
+    messages = db.relationship('ChatMessage', backref='session', lazy=True, cascade='all, delete-orphan')
 
 class ChatMessage(db.Model):
     __tablename__ = 'chat_messages'
     
     id = db.Column(db.Integer, primary_key=True)
-    session_id = db.Column(db.String(100), nullable=False)
-    role = db.Column(db.String(20), nullable=False)  # 'user' or 'assistant'
+    session_id = db.Column(db.String(100), db.ForeignKey('chat_sessions.session_id'), nullable=False)
+    role = db.Column(db.String(20), nullable=False)
     content = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    message_metadata = db.Column(db.Text)  # JSON string for additional data
-    context_used = db.Column(db.Text)  # What context was used for this response
-    
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'session_id': self.session_id,
-            'role': self.role,
-            'content': self.content,
-            'timestamp': self.timestamp.isoformat() if self.timestamp else None,
-            'message_metadata': self.message_metadata,
-            'context_used': self.context_used
-        }
+    message_metadata = db.Column(db.Text)
+    context_used = db.Column(db.String(500))
