@@ -10,7 +10,8 @@ if str(parent_dir) not in sys.path:
     sys.path.insert(0, str(parent_dir))
 
 # Now use absolute import
-from models import Event, Resource, Contact, Newsletter, dbfrom datetime import datetime
+from models import Event, Resource, Contact, Newsletter, dbfrom 
+datetime import datetime
 from Chatbot import ChatBot
 
 # Create blueprints
